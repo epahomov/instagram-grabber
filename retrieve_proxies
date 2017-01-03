@@ -1,0 +1,56 @@
+from selenium import webdriver
+
+proxies_file = "/Users/egor/proxies/proxies"
+
+driver = webdriver.Firefox()
+
+
+
+
+driver.get( "https://incloak.com/proxy-list/?maxtime=1000&type=s#list")
+
+proxies = []
+
+for line in  driver.find_elements_by_class_name("d"):
+    for x in line.text.split("\n"):
+        take = True
+        for c in x:
+            if (c.isalpha()):
+                take = False
+        if (take):
+            print x
+            proxies.append(x)
+
+
+driver.get( "https://www.sslproxies.org/")
+
+
+for x in  driver.find_elements_by_class_name("odd"):
+    proxies.append(x.text)
+for x in  driver.find_elements_by_class_name("even"):
+    proxies.append(x.text)
+
+driver.find_element_by_id("proxylisttable_next").click()
+
+for x in  driver.find_elements_by_class_name("odd"):
+    proxies.append(x.text)
+for x in  driver.find_elements_by_class_name("even"):
+    proxies.append(x.text)
+
+driver.find_element_by_id("proxylisttable_next").click()
+
+for x in  driver.find_elements_by_class_name("odd"):
+    proxies.append(x.text)
+for x in  driver.find_elements_by_class_name("even"):
+    proxies.append(x.text)
+
+driver.close()
+
+get_proxy_address = lambda line: line.split(" ")[0] + ":" + line.split(" ")[1]
+proxies = map(get_proxy_address, proxies)
+
+text_file = open(proxies_file, "w")
+
+for x in proxies:
+    text_file.write(x + "\n")
+text_file.close()
